@@ -1,0 +1,42 @@
+services:
+  postgresdb:
+    image: postgres:16-alpine
+    container_name: videoediting-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: docker
+      POSTGRES_DB: videoeditingdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - springboot-videoediting-net
+
+  backend:
+    image: snehithareddyalla/docker-backend-2400032390:latest
+    container_name: videoediting-backend
+    ports:
+      - "2007:2007"
+    depends_on:
+      - postgresdb
+    restart: on-failure
+    networks:
+      - springboot-videoediting-net
+
+  frontend:
+    image: snehithareddyalla/docker-frontend-2400032390:latest
+    container_name: videoediting-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    restart: on-failure
+    networks:
+      - springboot-videoediting-net
+
+volumes:
+  postgres_data:
+
+networks:
+  springboot-videoediting-net:

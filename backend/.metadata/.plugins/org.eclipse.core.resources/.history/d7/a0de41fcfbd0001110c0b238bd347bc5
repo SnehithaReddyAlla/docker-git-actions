@@ -1,0 +1,23 @@
+package com.klef.soa.docker.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.NotNull;
+
+import lombok.Data;
+
+@Data
+public class VideoEditingJobRequest
+{
+    @NotBlank(message = "Client name is required")
+    private String clientName;
+
+    @NotBlank(message = "Video type is required")
+    private String videoType;
+
+    @PositiveOrZero(message = "Fee must be zero or greater")
+    private double fee;
+
+    @NotNull(message = "Completed status is required")
+    private Boolean completed;
+}

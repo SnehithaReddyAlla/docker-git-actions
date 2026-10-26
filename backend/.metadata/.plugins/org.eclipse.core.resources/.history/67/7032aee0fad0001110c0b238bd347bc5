@@ -1,0 +1,123 @@
+package com.klef.soa.exam.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.klef.soa.docker.entity.VideoEditingJobEntity;
+import com.klef.soa.docker.service.VideoEditingJobService;
+
+@RestController
+@RequestMapping("/videoeditingjob")
+public class VideoEditingJobController
+{
+    @Autowired
+    private VideoEditingJobService service;
+
+    @GetMapping("/")
+    public String test()
+    {
+        return "SOA Programming & MicroServices";
+    }
+
+    // Add Video Editing Job
+    @PostMapping("/add")
+    public ResponseEntity<VideoEditingJobEntity> addVideoEditingJob(
+            @RequestBody VideoEditingJobEntity v)
+    {
+        VideoEditingJobEntity videoEditingJob = service.addVideoEditingJob(v);
+        return ResponseEntity.status(201).body(videoEditingJob);
+    }
+
+    // Display All Video Editing Jobs
+    @GetMapping("/displayall")
+    public ResponseEntity<List<VideoEditingJobEntity>> displayAllVideoEditingJobs()
+    {
+        List<VideoEditingJobEntity> jobs = service.displayAllVideoEditingJobs();
+        return ResponseEntity.status(200).body(jobs);
+    }
+
+    // Display Video Editing Job By ID
+    @GetMapping("/display")
+    public ResponseEntity<?> displayVideoEditingJobById(@RequestParam Long id)
+    {
+        VideoEditingJobEntity job = service.displayVideoEditingJobById(id);
+
+        if(job != null)
+        {
+            return ResponseEntity.status(200).body(job);
+        }
+        else
+        {
+            return ResponseEntity.status(404).body("Video Editing Job ID Not Found");
+        }
+    }
+
+    // Update Video Editing Job
+    @PutMapping("/update")
+    public ResponseEntity<?> updateVideoEditingJob(
+            @RequestBody VideoEditingJobEntity videoEditingJob)
+    {
+        VideoEditingJobEntity v = service.updateVideoEditingJob(videoEditingJob);
+
+        if(v != null)
+        {
+            return ResponseEntity.ok(v);
+        }
+        else
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Video Editing Job ID Not Found");
+        }
+    }
+
+    // Delete Video Editing Job By ID
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteVideoEditingJobById(@PathVariable Long id)
+    {
+        String message = service.deleteVideoEditingJobById(id);
+
+        if(message.equals("Video Editing Job ID Not Found"))
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(message);
+        }
+
+        return new ResponseEntity<>(message, HttpStatus.OK);
+    }
+
+    // Display Completed Jobs
+    @GetMapping("/displaycompleted")
+    public ResponseEntity<List<VideoEditingJobEntity>> displayCompletedJobs()
+    {
+        List<VideoEditingJobEntity> jobs = service.displayCompletedJobs();
+        return ResponseEntity.status(200).body(jobs);
+    }
+
+    // Display Non-Completed Jobs
+    @GetMapping("/displaynoncompleted")
+    public ResponseEntity<List<VideoEditingJobEntity>> displayNonCompletedJobs()
+    {
+        List<VideoEditingJobEntity> jobs = service.displayNonCompletedJobs();
+        return ResponseEntity.status(200).body(jobs);
+    }
+
+    // Display Jobs By Video Type
+    @GetMapping("/displaybyvideotype/{videoType}")
+    public ResponseEntity<List<VideoEditingJobEntity>> displayJobsByVideoType(
+            @PathVariable String videoType)
+    {
+        List<VideoEditingJobEntity> jobs = service.displayJobsByVideoType(videoType);
+        return ResponseEntity.status(200).body(jobs);
+    }
+}

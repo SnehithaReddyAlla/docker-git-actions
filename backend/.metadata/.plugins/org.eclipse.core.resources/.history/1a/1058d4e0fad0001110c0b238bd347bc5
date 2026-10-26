@@ -1,0 +1,17 @@
+package com.klef.soa.exam.service;
+
+import java.util.List;
+
+import com.klef.soa.docker.entity.VideoEditingJobEntity;
+
+public interface VideoEditingJobService
+{
+    VideoEditingJobEntity addVideoEditingJob(VideoEditingJobEntity videoEditingJob);
+    List<VideoEditingJobEntity> displayAllVideoEditingJobs();
+    VideoEditingJobEntity updateVideoEditingJob(VideoEditingJobEntity videoEditingJob);
+    VideoEditingJobEntity displayVideoEditingJobById(Long id);
+    String deleteVideoEditingJobById(Long id);
+    List<VideoEditingJobEntity> displayCompletedJobs();
+    List<VideoEditingJobEntity> displayNonCompletedJobs();
+    List<VideoEditingJobEntity> displayJobsByVideoType(String videoType);
+}

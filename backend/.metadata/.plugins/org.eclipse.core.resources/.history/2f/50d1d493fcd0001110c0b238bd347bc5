@@ -1,0 +1,102 @@
+```java
+package com.klef.soa.docker.controller;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.klef.soa.docker.dto.VideoEditingJobRequest;
+import com.klef.soa.docker.dto.VideoEditingJobResponse;
+import com.klef.soa.docker.service.VideoEditingJobService;
+
+import jakarta.validation.Valid;
+
+@CrossOrigin("*")
+@RestController
+@RequestMapping("/videoeditingjob")
+public class VideoEditingJobController
+{
+    @Autowired
+    private VideoEditingJobService service;
+
+    @GetMapping("/")
+    public String home()
+    {
+        return "Video Editing Job Management Project";
+    }
+
+    @PostMapping("/add")
+    public ResponseEntity<VideoEditingJobResponse> saveVideoEditingJob(
+            @Valid @RequestBody VideoEditingJobRequest request)
+    {
+        return new ResponseEntity<>(
+                service.saveVideoEditingJob(request), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/displayall")
+    public ResponseEntity<List<VideoEditingJobResponse>> getAllVideoEditingJobs()
+    {
+        return ResponseEntity.ok(service.getAllVideoEditingJobs());
+    }
+
+    @GetMapping("/display/id/{id}")
+    public ResponseEntity<?> getVideoEditingJobById(@PathVariable Long id)
+    {
+        VideoEditingJobResponse videoEditingJob =
+                service.getVideoEditingJobById(id);
+
+        if(videoEditingJob != null)
+        {
+            return ResponseEntity.ok(videoEditingJob);
+        }
+        else
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Video Editing Job Id Not Found");
+        }
+    }
+
+    @PutMapping("/update/{id}")
+    public ResponseEntity<?> updateVideoEditingJob(
+            @PathVariable Long id,
+            @Valid @RequestBody VideoEditingJobRequest request)
+    {
+        VideoEditingJobResponse videoEditingJob =
+                service.updateVideoEditingJob(id, request);
+
+        if(videoEditingJob != null)
+        {
+            return ResponseEntity.ok(videoEditingJob);
+        }
+        else
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Video Editing Job Id Not Found to Update");
+        }
+    }
+
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<String> deleteVideoEditingJob(@PathVariable Long id)
+    {
+        String output = service.deleteVideoEditingJob(id);
+
+        if(output.equals("Video Editing Job Id Not Found To Delete"))
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(output);
+        }
+
+        return ResponseEntity.ok(output);
+    }
+}
+```

@@ -1,0 +1,109 @@
+```java
+package com.klef.soa.docker.service;
+
+import java.util.List;
+import java.util.Optional;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.klef.soa.docker.dto.VideoEditingJobRequest;
+import com.klef.soa.docker.dto.VideoEditingJobResponse;
+import com.klef.soa.docker.entity.VideoEditingJobEntity;
+import com.klef.soa.docker.repository.VideoEditingJobRepository;
+
+@Service
+public class VideoEditingJobServiceImpl implements VideoEditingJobService
+{
+    @Autowired
+    private VideoEditingJobRepository repo;
+
+    @Override
+    public VideoEditingJobResponse saveVideoEditingJob(VideoEditingJobRequest request)
+    {
+        VideoEditingJobEntity videoEditingJob = VideoEditingJobEntity.builder()
+                .clientName(request.getClientName())
+                .videoType(request.getVideoType())
+                .fee(request.getFee())
+                .completed(request.getCompleted())
+                .build();
+
+        VideoEditingJobEntity savedJob = repo.save(videoEditingJob);
+        return mapToResponse(savedJob);
+    }
+
+    @Override
+    public List<VideoEditingJobResponse> getAllVideoEditingJobs()
+    {
+        return repo.findAll()
+                .stream()
+                .map(this::mapToResponse)
+                .toList();
+    }
+
+    @Override
+    public VideoEditingJobResponse getVideoEditingJobById(Long id)
+    {
+        Optional<VideoEditingJobEntity> optional = repo.findById(id);
+
+        if(optional.isPresent())
+        {
+            return mapToResponse(optional.get());
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public VideoEditingJobResponse updateVideoEditingJob(Long id, VideoEditingJobRequest request)
+    {
+        Optional<VideoEditingJobEntity> optional = repo.findById(id);
+
+        if(optional.isPresent())
+        {
+            VideoEditingJobEntity videoEditingJob = optional.get();
+
+            videoEditingJob.setClientName(request.getClientName());
+            videoEditingJob.setVideoType(request.getVideoType());
+            videoEditingJob.setFee(request.getFee());
+            videoEditingJob.setCompleted(request.getCompleted());
+
+            VideoEditingJobEntity updatedJob = repo.save(videoEditingJob);
+            return mapToResponse(updatedJob);
+        }
+        else
+        {
+            return null;
+        }
+    }
+
+    @Override
+    public String deleteVideoEditingJob(Long id)
+    {
+        boolean status = repo.existsById(id);
+
+        if(status)
+        {
+            repo.deleteById(id);
+            return "Video Editing Job Deleted Successfully";
+        }
+        else
+        {
+            return "Video Editing Job Id Not Found To Delete";
+        }
+    }
+
+    private VideoEditingJobResponse mapToResponse(VideoEditingJobEntity videoEditingJob)
+    {
+        return VideoEditingJobResponse.builder()
+                .id(videoEditingJob.getId())
+                .clientName(videoEditingJob.getClientName())
+                .videoType(videoEditingJob.getVideoType())
+                .fee(videoEditingJob.getFee())
+                .completed(videoEditingJob.isCompleted())
+                .build();
+    }
+}
+```
