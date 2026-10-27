@@ -18,11 +18,16 @@ services:
     container_name: videoediting-backend
     ports:
       - "2007:2007"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgresdb:5432/videoeditingdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: docker
     depends_on:
       - postgresdb
     restart: on-failure
     networks:
       - springboot-videoediting-net
+
 
   frontend:
     image: snehithareddyalla/docker-frontend-2400032390:latest
